@@ -1,0 +1,118 @@
+.container {
+
+}
+  
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+  
+.item:hover {
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
+}
+  
+.bgContainer {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+  
+.userImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+  
+.texts {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+  
+.notification {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ff4500;
+    margin-bottom: 5px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin: 5px 0;
+}
+  
+.subtitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #777;
+}
+  
+.desc {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-top: 10px;
+}
+  
+.descdetail {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+  
+.buttondone,
+.buttoncancelled,
+.buttonedit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+  
+.buttondone {
+    background-color: #28a745;
+    color: white;
+}
+  
+.buttondone:hover {
+    background-color: #218838;
+}
+  
+.buttoncancelled {
+    background-color: #dc3545;
+    color: white;
+}
+  
+.buttoncancelled:hover {
+    background-color: #c82333;
+}
+  
+.buttonedit {
+    background-color: #ffc107;
+    color: black;
+}
+  
+.buttonedit:hover {
+    background-color: #e0a800;
+}

@@ -50,7 +50,7 @@ export default function Chart() {
               fill="#8884d8"
               dataKey="value"
             >
-              {data2.map((_, index) => (
+              {data2.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
@@ -68,9 +68,10 @@ export default function Chart() {
             data={data}
           >
             <RadialBar
+
               label={{ position: "insideStart", fill: "#fff" }}
               background
-              //clockwise
+
               dataKey="uv"
               className={styles.radialBar}
             />

@@ -1,0 +1,68 @@
+.container{
+    padding: 20px;
+    border-radius: 20px;
+    background-color: bisque;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 2px -2px gray;
+    max-width: 100%;
+
+}
+.container:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.title{
+    color: chocolate;
+    font-weight: bold;
+    text-transform: capitalize;
+    font-size: 24px;
+    text-shadow: #ffffff 0px 0px 0px 2px;
+}
+.table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.table td{
+    padding: 10px;
+}
+
+.users{
+    display: flex;
+    gap: 10px;
+    align-items: center
+}
+
+.userImage{
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.status{
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+
+}
+
+.pending{
+    background-color: rgb(13, 0, 255);
+}
+
+.done{
+    background-color: green;
+}
+
+.cancelled{
+    background-color: red;
+}

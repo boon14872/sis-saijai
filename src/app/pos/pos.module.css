@@ -1,0 +1,120 @@
+/* pos.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #fefefe, #f5f5f5);
+    min-height: 100vh;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 2.5em;
+    color: #333;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .productList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .productItem {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .productItem:hover {
+    transform: scale(1.05);
+  }
+  
+  .productItem img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+  }
+  
+  .productItem h3 {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #333;
+  }
+  
+  .productItem p {
+    font-size: 1em;
+    color: #777;
+  }
+  
+  .button {
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #005bb5;
+  }
+  
+  .cartContainer {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .cartItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .cartItem h3 {
+    font-size: 1em;
+    margin: 0;
+    color: #333;
+  }
+  
+  .cartItem p {
+    margin: 0;
+    color: #777;
+  }
+  
+  .cartTotal {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 1.5em;
+    color: #333;
+  }
+  
+  .checkoutButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .checkoutButton:hover {
+    background-color: #218838;
+  }
+  

@@ -31,10 +31,10 @@ export default function HomePage() {
 
         <div className={`${styles.container} ${styles.buttons}`}>
           <Link href="/pos" passHref legacyBehavior>
-            <a className={styles.button}>POS</a>
+            <a className={styles.button} aria-label="Go to POS">POS</a>
           </Link>
           <Link href="/dashboard" passHref legacyBehavior>
-            <a className={styles.button}>Dashboard</a>
+            <a className={styles.button} aria-label="Go to Dashboard">Dashboard</a>
           </Link>
         </div>
       </div>

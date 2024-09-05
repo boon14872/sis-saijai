@@ -1,4 +1,10 @@
-:root{}
+:root {
+  --bg: #fefefe;
+  --text: #333;
+  --primary-color: #f0ad4e;
+  --primary-hover: #ec971f;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
 
 *{
   margin: 0;
@@ -6,12 +12,12 @@
   box-sizing: border-box;
 }
 
-body{
+body {
   background: var(--bg);
   color: var(--text);
 }
 
-a{
-  color:initial;
+a {
+  color: var(--text);
   text-decoration: none;
 }
