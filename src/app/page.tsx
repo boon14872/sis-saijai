@@ -36,9 +36,6 @@ export default function HomePage() {
           <Link href="/dashboard" passHref legacyBehavior>
             <a className={styles.button}>Dashboard</a>
           </Link>
-          <Link href="/login" passHref legacyBehavior>
-            <a className={styles.button}>Login</a>
-          </Link>
         </div>
       </div>
     </main>
