@@ -22,16 +22,59 @@ model Employee {
   hireDate    DateTime
   salary      Float
 }
-model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  price       Float
-  description String?
-  imageUrl    String
-}
 
-model CartItem {
-  id        Int     @id @default(autoincrement())
-  quantity  Int
-  productId Int
-}
+// model Product {
+//   id            Int     @id @default(autoincrement())
+//   productName   String  @db.VarChar(100)
+//   category      String  @db.VarChar(50)
+//   price         Float
+//   stockQuantity Int
+// }
+
+// model Order {
+//   id            Int      @id @default(autoincrement())
+//   customerId    Int
+//   orderDate     DateTime
+//   totalAmount   Float
+//   paymentStatus String   @db.VarChar(20)
+
+//   Customer      Customer @relation(fields: [customerId], references: [id])
+//   OrderDetails  OrderDetail[]
+// }
+
+// model OrderDetail {
+//   id          Int     @id @default(autoincrement())
+//   orderId     Int
+//   productId   Int
+//   quantity    Int
+//   priceAtOrder Float
+
+//   Order       Order    @relation(fields: [orderId], references: [id])
+//   Product     Product  @relation(fields: [productId], references: [id])
+// }
+
+// model Payment {
+//   id            Int      @id @default(autoincrement())
+//   orderId       Int
+//   paymentDate   DateTime
+//   paymentAmount Float
+//   paymentMethod String   @db.VarChar(20)
+
+//   Order         Order    @relation(fields: [orderId], references: [id])
+// }
+
+// model Inventory {
+//   id              Int     @id @default(autoincrement())
+//   productId       Int
+//   Quantity       Int
+
+//   Product         Product @relation(fields: [productId], references: [id])
+// }
+
+// model Promotion {
+//   id            Int     @id @default(autoincrement())
+//   promotionName String  @db.VarChar(100)
+//   discountAmount Float
+//   startDate     DateTime
+//   endDate       DateTime?
+// }
