@@ -10,71 +10,78 @@ datasource db {
 model Customer {
   id       Int    @id @default(autoincrement())
   nickName String
+  Orders   Order[] 
 }
 
 model Employee {
   id          Int     @id @default(autoincrement())
   firstName   String
   lastName    String
-  email       String
+  email       String  @unique
   phoneNumber String
   position    String
   hireDate    DateTime
   salary      Float
 }
 
-// model Product {
-//   id            Int     @id @default(autoincrement())
-//   productName   String  @db.VarChar(100)
-//   category      String  @db.VarChar(50)
-//   price         Float
-//   stockQuantity Int
-// }
+model Product {
+  id            Int     @id @default(autoincrement())
+  productName   String  
+  category      String  
+  price         Float
+  stockQuantity Int
 
-// model Order {
-//   id            Int      @id @default(autoincrement())
-//   customerId    Int
-//   orderDate     DateTime
-//   totalAmount   Float
-//   paymentStatus String   @db.VarChar(20)
+  OrderDetails  OrderDetail[]
+  Inventory     Inventory?
+  
+  @@index([category])  
+}
 
-//   Customer      Customer @relation(fields: [customerId], references: [id])
-//   OrderDetails  OrderDetail[]
-// }
+model Order {
+  id            Int      @id @default(autoincrement())
+  customerId    Int
+  orderDate     DateTime
+  totalAmount   Float
+  paymentStatus String   
 
-// model OrderDetail {
-//   id          Int     @id @default(autoincrement())
-//   orderId     Int
-//   productId   Int
-//   quantity    Int
-//   priceAtOrder Float
+  Customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  OrderDetails  OrderDetail[]
+  Payment       Payment[] 
+}
 
-//   Order       Order    @relation(fields: [orderId], references: [id])
-//   Product     Product  @relation(fields: [productId], references: [id])
-// }
+model OrderDetail {
+  id          Int     @id @default(autoincrement())
+  orderId     Int
+  productId   Int
+  quantity    Int
+  priceAtOrder Float
 
-// model Payment {
-//   id            Int      @id @default(autoincrement())
-//   orderId       Int
-//   paymentDate   DateTime
-//   paymentAmount Float
-//   paymentMethod String   @db.VarChar(20)
+  Order       Order    @relation(fields: [orderId], references: [id])
+  Product     Product  @relation(fields: [productId], references: [id])
+}
 
-//   Order         Order    @relation(fields: [orderId], references: [id])
-// }
+model Payment {
+  id            Int      @id @default(autoincrement())
+  orderId       Int
+  paymentDate   DateTime
+  paymentAmount Float
+  paymentMethod String   
 
-// model Inventory {
-//   id              Int     @id @default(autoincrement())
-//   productId       Int
-//   Quantity       Int
+  Order         Order    @relation(fields: [orderId], references: [id])
+}
 
-//   Product         Product @relation(fields: [productId], references: [id])
-// }
+model Inventory {
+  id        Int    @id @default(autoincrement())
+  productId Int    @unique 
+  quantity  Int    
+  
+  Product   Product @relation(fields: [productId], references: [id])
+}
 
-// model Promotion {
-//   id            Int     @id @default(autoincrement())
-//   promotionName String  @db.VarChar(100)
-//   discountAmount Float
-//   startDate     DateTime
-//   endDate       DateTime?
-// }
+model Promotion {
+  id            Int     @id @default(autoincrement())
+  promotionName String  
+  discountAmount Float
+  startDate     DateTime
+  endDate       DateTime?
+}

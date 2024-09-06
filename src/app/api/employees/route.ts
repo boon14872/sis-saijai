@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import prisma from "../../../../prisma";
+import prisma from "../../../prisma";
 
 // GET: ดึงข้อมูลพนักงานทั้งหมด
 export async function GET() {
@@ -34,38 +34,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PATCH: แก้ไขพนักงาน
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
-
-  try {
-    const body = await req.json();
-    const updatedEmployee = await prisma.employee.update({
-      where: { id: Number(id) },
-      data: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        email: body.email,
-        phoneNumber: body.phoneNumber,
-        position: body.position,
-        hireDate: new Date(body.hireDate),
-        salary: body.salary,
-      },
-    });
-    return NextResponse.json(updatedEmployee);
-  } catch (error) {
-    console.error("Error updating employee:", error);
-    return NextResponse.error();
-  }
-}
-
-// DELETE: ลบพนักงาน
+// DELETE: ลบพนักงานตาม ID ที่ส่งมาใน URL
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+  const { id } = params; // รับ id จาก URL
 
   try {
     const deletedEmployee = await prisma.employee.delete({
-      where: { id: Number(id) },
+      where: { id: Number(id) },  // ลบพนักงานตาม ID
     });
     return NextResponse.json(deletedEmployee);
   } catch (error) {

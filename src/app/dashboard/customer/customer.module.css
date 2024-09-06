@@ -1,104 +1,159 @@
+.headerTitle {
+  font-size: 2.5em;
+  color: #343a40;
+  margin-bottom: 20px; /* Added spacing below the header */
+}
+
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #f7f7f7;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 90%;
-    margin: auto;
-    margin-top: 20px;
-  }
-  
-  .top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .addBtn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  
-  .addBtn:hover {
-    background-color: #45a049;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .table th, .table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-  }
-  
-  .table td {
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .user {
-    display: flex;
-    align-items: center;
-  }
-  
-  .userImage {
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .actions {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  
-  .view {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .view:hover {
-    background-color: #0069d9;
-  }
-  
-  .delete {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .delete:hover {
-    background-color: #c82333;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 80%;
+  margin: 30px auto;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 900px; /* Limit the width for better layout */
+  margin-bottom: 20px; /* Spacing between top section and table */
+}
+
+.addBtn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  font-size: 1em; /* Standardize button text size */
+}
+
+.addBtn:hover {
+  background-color: #218838;
+}
+
+.table {
+  width: 100%;
+  max-width: 900px; /* Set max-width for the table to align it with the rest of the content */
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.table td {
+  font-size: 1em;
+  color: #333;
+}
+
+.table td button {
+  padding: 5px 10px;
+  font-size: 0.9em; /* Standardize button text size */
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+}
+
+.table td button:hover {
+  background-color: #c82333;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #343a40;
+  width: 100%; /* Ensures the label takes the full width */
+  text-align: left; /* Aligns the text to the left */
+}
+
+.form input {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 100%; /* Full width input */
+}
+
+.submitBtn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.submitBtn {
+  background-color: #28a745;
+  color: white;
+  margin-bottom: 10px; /* Add spacing between Add and Cancel buttons */
+}
+
+.cancelBtn {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.cancelBtn:hover {
+  background-color: #c82333;
+}
+
+.p {
+  color: #ff6f61;
+  font-weight: bold;
+}

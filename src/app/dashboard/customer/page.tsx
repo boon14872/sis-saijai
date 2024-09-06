@@ -1,74 +1,122 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import styles from "./customer.module.css";
+
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import styles from './customer.module.css';
 
 type Customer = {
   id: number;
   nickName: string;
-  email: string;
 };
 
 export default function CustomerDashboard() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [nickName, setNickName] = useState('');
 
   useEffect(() => {
-    fetch("/api/customers")
-      .then((res) => res.json())
-      .then((data) => {
-        setCustomers(data);
-        setLoading(false);
-      });
+    // Fetch customers from API
+    fetchCustomers();
   }, []);
 
-  const handleDelete = async (id: number) => {
+  const fetchCustomers = async () => {
     try {
-      await fetch(`/api/customers/${id}`, {
-        method: "DELETE",
-      });
+      const response = await axios.get('/api/customers');
+      setCustomers(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching customers:", err);
+      setError("Failed to load customers.");
+      setLoading(false);
+    }
+  };
+
+  // Add a new customer
+  const handleAddCustomer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (nickName.trim() === "") return;
+
+    try {
+      const response = await axios.post("/api/customers", { nickName });
+
+      if (response.status !== 201) {
+        throw new Error("Failed to add customer");
+      }
+
+      const newCustomer = response.data;
+      setCustomers([...customers, newCustomer]);
+      setNickName("");
+      setShowForm(false);
+    } catch (error) {
+      console.error("Error adding customer:", error);
+      setError("Failed to add customer.");
+    }
+  };
+
+  // Delete a customer
+  const handleDeleteCustomer = async (id: number) => {
+    try {
+      await axios.delete(`/api/customers`, { data: { id } });
       setCustomers(customers.filter((customer) => customer.id !== id));
     } catch (error) {
-      console.error("Failed to delete customer", error);
+      console.error("Error deleting customer:", error);
+      setError("Failed to delete customer.");
     }
   };
 
   return (
     <div className={styles.container}>
-      <h1>Customer Dashboard</h1>
-      <Link href="/dashboard/customers/add">
-        <button>Add Customer</button>
-      </Link>
+      <div className={styles.top}>
+        <h1 className={styles.headerTitle}>Customer Dashboard</h1>
+        <button className={styles.addBtn} onClick={() => setShowForm(true)}>Add Customer</button>
+      </div>
+      
       {loading ? (
         <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nickname</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {customers.map((customer) => (
-              <tr key={customer.id}>
-                <td>{customer.id}</td>
-                <td>{customer.nickName}</td>
-                <td>{customer.email}</td>
-                <td>
-                  <Link href={`/dashboard/customers/edit/${customer.id}`}>
-                    <button>Edit</button>
-                  </Link>
-                  <button onClick={() => handleDelete(customer.id)}>
-                    Delete
-                  </button>
-                </td>
+        <>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nickname</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {customers.map((customer) => (
+                <tr key={customer.id}>
+                  <td>{customer.id}</td>
+                  <td>{customer.nickName}</td>
+                  <td>
+                    <button onClick={() => handleDeleteCustomer(customer.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      {showForm && (
+        <div className={styles.formContainer}>
+          <form onSubmit={handleAddCustomer}>
+            <label htmlFor="nickName">Nickname</label>
+            <input
+              type="text"
+              id="nickName"
+              value={nickName}
+              onChange={(e) => setNickName(e.target.value)}
+              required
+            />
+            <button type="submit" className={styles.submitBtn}>Add</button>
+            <button type="button" className={styles.cancelBtn} onClick={() => setShowForm(false)}>Cancel</button>
+          </form>
+        </div>
       )}
     </div>
   );
