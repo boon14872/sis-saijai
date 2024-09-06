@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ type Employee = {
   position: string;
   hireDate: string;
   salary: number;
+  imagePath?: string;
 };
 
 export default function EmployeeDashboard() {
@@ -27,94 +27,101 @@ export default function EmployeeDashboard() {
     lastName: "",
     email: "",
     phoneNumber: "",
-    position: "",
+    position: "Barista",
     hireDate: "",
     salary: 0,
   });
   const [phoneError, setPhoneError] = useState<string | null>(null);
 
-  // Fetch employees from the API
+  // Fetch employees from the API on component mount
   useEffect(() => {
-    axios
-      .get("/api/employees")
-      .then((response) => {
-        setEmployees(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching employees:", err);
-        setError("Failed to load employees.");
-        setLoading(false);
-      });
+    fetchEmployees();
   }, []);
 
-  // Handle changes in the form
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get("/api/employees");
+      setEmployees(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching employees:", err);
+      setError("Failed to load employees.");
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
     if (name === "phoneNumber") {
-      if (value.length > 10) return; // Prevent entering more than 10 digits
+      if (value.length > 10) return; // Limiting phone number input
       setNewEmployee({ ...newEmployee, phoneNumber: value });
-
-      if (value.length !== 10) {
-        setPhoneError("Phone number must be exactly 10 digits");
-      } else {
-        setPhoneError(null);
-      }
+      setPhoneError(value.length !== 10 ? "Phone number must be exactly 10 digits" : null);
     } else {
       setNewEmployee({ ...newEmployee, [name]: value });
     }
   };
 
-// Add logs inside the handleAddEmployee function
-const handleAddEmployee = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    console.log("Submitting form with data:", newEmployee); // Log the form data before submission
-  
+
     if (newEmployee.phoneNumber.length !== 10) {
-      alert("Phone number must be exactly 10 digits");
+      setPhoneError("Phone number must be exactly 10 digits");
       return;
     }
-  
+
     try {
-      const response = await fetch("/api/employees", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newEmployee),
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error from API:", errorData);
-        throw new Error(errorData.error || "Failed to add employee");
+      if (editingId) {
+        await handleUpdateEmployee();
+      } else {
+        await handleAddEmployee();
       }
-  
-      const employee = await response.json();
-      console.log("Employee added successfully:", employee); // Log successful addition
-  
-      setEmployees([...employees, employee]);
-      setNewEmployee({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        position: "",
-        hireDate: "",
-        salary: 0,
-      });
-      setShowForm(false);
+      resetForm();
     } catch (error) {
-      console.error("Error adding employee:", error); // Log the error if adding fails
-      setError("Failed to add employee.");
+      console.error("Error submitting form:", error);
+      setError("Failed to submit form.");
     }
   };
 
-  // Edit employee
+  const handleAddEmployee = async () => {
+    const response = await fetch("/api/employees", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newEmployee),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to add employee");
+    }
+
+    const employee = await response.json();
+    setEmployees([...employees, employee]);
+  };
+
+  const handleUpdateEmployee = async () => {
+    const response = await fetch(`/api/employees/${editingId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newEmployee),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update employee");
+    }
+
+    const updatedEmployee = await response.json();
+    setEmployees(
+      employees.map((emp) =>
+        emp.id === editingId ? { ...emp, ...updatedEmployee } : emp
+      )
+    );
+  };
+
   const handleEdit = (employee: Employee) => {
     setEditingId(employee.id);
     setNewEmployee({
@@ -123,58 +130,12 @@ const handleAddEmployee = async (e: React.FormEvent) => {
       email: employee.email,
       phoneNumber: employee.phoneNumber,
       position: employee.position,
-      hireDate: employee.hireDate.split("T")[0],
+      hireDate: employee.hireDate.split("T")[0], // Format hireDate for input type="date"
       salary: employee.salary,
     });
     setShowForm(true);
   };
 
-  // Save the updated employee
-  const handleUpdateEmployee = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (newEmployee.phoneNumber.length !== 10) {
-      alert("Phone number must be exactly 10 digits");
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/employees/${editingId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newEmployee),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update employee");
-      }
-
-      const updatedEmployee = await response.json();
-      setEmployees(
-        employees.map((emp) =>
-          emp.id === editingId ? { ...emp, ...updatedEmployee } : emp
-        )
-      );
-      setEditingId(null);
-      setNewEmployee({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        position: "",
-        hireDate: "",
-        salary: 0,
-      });
-      setShowForm(false);
-    } catch (error) {
-      console.error("Error updating employee:", error);
-      setError("Failed to update employee.");
-    }
-  };
-
-  // Delete employee
   const handleDelete = async (id: number) => {
     try {
       await fetch(`/api/employees/${id}`, { method: "DELETE" });
@@ -183,6 +144,21 @@ const handleAddEmployee = async (e: React.FormEvent) => {
       console.error("Error deleting employee:", error);
       setError("Failed to delete employee.");
     }
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
+    setNewEmployee({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      position: "Barista",
+      hireDate: "",
+      salary: 0,
+    });
+    setShowForm(false);
+    setPhoneError(null);
   };
 
   return (
@@ -240,9 +216,7 @@ const handleAddEmployee = async (e: React.FormEvent) => {
 
       {showForm && (
         <div className={styles.formContainer}>
-          <form
-            onSubmit={editingId ? handleUpdateEmployee : handleAddEmployee}
-          >
+          <form onSubmit={handleSubmit}>
             <label>First Name</label>
             <input
               type="text"
@@ -310,10 +284,7 @@ const handleAddEmployee = async (e: React.FormEvent) => {
             <button
               type="button"
               className={styles.cancelBtn}
-              onClick={() => {
-                setShowForm(false);
-                setEditingId(null);
-              }}
+              onClick={resetForm}
             >
               Cancel
             </button>
