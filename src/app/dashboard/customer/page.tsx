@@ -17,7 +17,6 @@ export default function CustomerDashboard() {
   const [nickName, setNickName] = useState('');
 
   useEffect(() => {
-    // Fetch customers from API
     fetchCustomers();
   }, []);
 
@@ -58,7 +57,7 @@ export default function CustomerDashboard() {
   // Delete a customer
   const handleDeleteCustomer = async (id: number) => {
     try {
-      await axios.delete(`/api/customers`, { data: { id } });
+      await axios.delete(`/api/customers/${id}`);
       setCustomers(customers.filter((customer) => customer.id !== id));
     } catch (error) {
       console.error("Error deleting customer:", error);

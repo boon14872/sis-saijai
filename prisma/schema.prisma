@@ -14,10 +14,10 @@ model Customer {
 }
 
 model Employee {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   firstName   String
   lastName    String
-  email       String  @unique
+  email       String   @unique
   phoneNumber String
   position    String
   hireDate    DateTime

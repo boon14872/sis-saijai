@@ -26,7 +26,7 @@ const menuItems = [
       },
       {
         title: 'Employee',
-        path: '/dashboard/employee',
+        path: '/dashboard/employees',
         icon: <MdEmojiPeople />
       },
       {

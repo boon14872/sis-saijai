@@ -1,50 +1,51 @@
-import { NextResponse, NextRequest } from "next/server";
-import prisma from "../../../prisma";
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '../../../prisma';
 
-// GET: ดึงข้อมูลพนักงานทั้งหมด
+// GET: Fetch all employees
 export async function GET() {
   try {
     const employees = await prisma.employee.findMany();
     return NextResponse.json(employees);
   } catch (error) {
     console.error("Error fetching employees:", error);
-    return NextResponse.error();
+    return NextResponse.json({ error: "Failed to load employees" }, { status: 500 });
   }
 }
 
-// POST: เพิ่มพนักงานใหม่
+// POST: Add a new employee
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const json = await req.json();
+    console.log("Request body:", json);
+
+    const { firstName, lastName, email, phoneNumber, position, hireDate, salary } = json;
+
+    // Validate if all required fields are present
+    if (!firstName || !lastName || !email || !phoneNumber || !position || !hireDate || !salary) {
+      console.log("Validation failed: Missing fields");
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    }
+
+    // Validate phone number length
+    if (phoneNumber.length !== 10) {
+      return NextResponse.json({ error: "Phone number must be exactly 10 digits" }, { status: 400 });
+    }
+
     const newEmployee = await prisma.employee.create({
       data: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        email: body.email,
-        phoneNumber: body.phoneNumber,
-        position: body.position,
-        hireDate: new Date(body.hireDate),
-        salary: body.salary,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        position,
+        hireDate: new Date(hireDate), // Ensure correct date format
+        salary: parseFloat(salary),   // Ensure salary is a float number
       },
     });
-    return NextResponse.json(newEmployee);
-  } catch (error) {
-    console.error("Error creating employee:", error);
-    return NextResponse.error();
-  }
-}
 
-// DELETE: ลบพนักงานตาม ID ที่ส่งมาใน URL
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params; // รับ id จาก URL
-
-  try {
-    const deletedEmployee = await prisma.employee.delete({
-      where: { id: Number(id) },  // ลบพนักงานตาม ID
-    });
-    return NextResponse.json(deletedEmployee);
+    return NextResponse.json(newEmployee, { status: 201 });
   } catch (error) {
-    console.error("Error deleting employee:", error);
-    return NextResponse.error();
+    console.error("Error adding employee:", error);
+    return NextResponse.json({ error: "Failed to add employee" }, { status: 500 });
   }
 }
