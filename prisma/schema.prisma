@@ -10,7 +10,7 @@ datasource db {
 model Customer {
   id       Int    @id @default(autoincrement())
   nickName String
-  Orders   Order[] 
+  // Orders   Orders[] 
 }
 
 model Employee {
@@ -25,58 +25,39 @@ model Employee {
 }
 
 model Product {
-  id            Int     @id @default(autoincrement())
-  productName   String  
-  category      String  
-  price         Float
-  stockQuantity Int
-
-  OrderDetails  OrderDetail[]
-  Inventory     Inventory?
-  
-  @@index([category])  
+  id            Int           @id @default(autoincrement())
+  productName   String
+  category      String         
+  price         Int
+  toppings      Topping[] 
+  details       ProductDetail[] // Relation to ProductDetail
+  @@index([category])
 }
 
-model Order {
-  id            Int      @id @default(autoincrement())
-  customerId    Int
-  orderDate     DateTime
-  totalAmount   Float
-  paymentStatus String   
-
-  Customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  OrderDetails  OrderDetail[]
-  Payment       Payment[] 
+model Topping {
+  id         Int            @id @default(autoincrement())
+  name       String
+  products   Product[]
+  price         Int
 }
-
-model OrderDetail {
-  id          Int     @id @default(autoincrement())
-  orderId     Int
-  productId   Int
-  quantity    Int
-  priceAtOrder Float
-
-  Order       Order    @relation(fields: [orderId], references: [id])
-  Product     Product  @relation(fields: [productId], references: [id])
-}
-
-model Payment {
-  id            Int      @id @default(autoincrement())
-  orderId       Int
-  paymentDate   DateTime
-  paymentAmount Float
-  paymentMethod String   
-
-  Order         Order    @relation(fields: [orderId], references: [id])
-}
-
 model Inventory {
-  id        Int    @id @default(autoincrement())
-  productId Int    @unique 
-  quantity  Int    
-  
-  Product   Product @relation(fields: [productId], references: [id])
+  id              Int              @id @default(autoincrement())
+  itemName        String
+  quantity        Int
+  productDetails  ProductDetail[]  // Inventory related to ProductDetail
 }
+
+model ProductDetail {
+  id          Int        @id @default(autoincrement())
+  detailName  String     // Item name, e.g. แก้ว (cup), หลอด (straw)
+  quantity    Int        // Quantity needed for the product
+  productId   Int        // Link to Product
+  Product     Product    @relation(fields: [productId], references: [id])
+  inventoryId Int        // Link to Inventory
+  Inventory   Inventory  @relation(fields: [inventoryId], references: [id])
+}
+
+
 
 model Promotion {
   id            Int     @id @default(autoincrement())

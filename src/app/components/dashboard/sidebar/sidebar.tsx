@@ -30,7 +30,7 @@ const menuItems = [
         icon: <MdEmojiPeople />
       },
       {
-        title: 'Product',
+        title: 'Products',
         path: '/dashboard/products',
         icon: <MdProductionQuantityLimits />
       },

@@ -15,6 +15,7 @@ export default function CustomerDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [nickName, setNickName] = useState('');
+  const [editingId, setEditingId] = useState<number | null>(null); // Track the editing customer
 
   useEffect(() => {
     fetchCustomers();
@@ -32,26 +33,45 @@ export default function CustomerDashboard() {
     }
   };
 
-  // Add a new customer
-  const handleAddCustomer = async (e: React.FormEvent) => {
+  // Add a new customer or update an existing one
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (nickName.trim() === "") return;
 
     try {
-      const response = await axios.post("/api/customers", { nickName });
-
-      if (response.status !== 201) {
-        throw new Error("Failed to add customer");
+      if (editingId) {
+        // Update existing customer
+        await axios.patch(`/api/customers/${editingId}`, { nickName });
+        setCustomers(
+          customers.map((customer) =>
+            customer.id === editingId ? { ...customer, nickName } : customer
+          )
+        );
+        setEditingId(null); // Reset the editing state
+      } else {
+        // Add a new customer
+        const response = await axios.post("/api/customers", { nickName });
+        if (response.status !== 201) {
+          throw new Error("Failed to add customer");
+        }
+        const newCustomer = response.data;
+        setCustomers([...customers, newCustomer]);
       }
 
-      const newCustomer = response.data;
-      setCustomers([...customers, newCustomer]);
       setNickName("");
       setShowForm(false);
     } catch (error) {
-      console.error("Error adding customer:", error);
-      setError("Failed to add customer.");
+      console.error("Error submitting customer:", error);
+      setError("Failed to submit customer.");
     }
+  };
+
+  // Start editing a customer
+  const handleEditCustomer = (customer: Customer) => {
+    setNickName(customer.nickName); // Prepopulate the nickname field
+    setEditingId(customer.id); // Set the editing customer ID
+    setShowForm(true);
   };
 
   // Delete a customer
@@ -63,6 +83,13 @@ export default function CustomerDashboard() {
       console.error("Error deleting customer:", error);
       setError("Failed to delete customer.");
     }
+  };
+
+  // Cancel editing or adding customer
+  const handleCancel = () => {
+    setEditingId(null);
+    setNickName("");
+    setShowForm(false);
   };
 
   return (
@@ -92,6 +119,7 @@ export default function CustomerDashboard() {
                   <td>{customer.id}</td>
                   <td>{customer.nickName}</td>
                   <td>
+                    <button onClick={() => handleEditCustomer(customer)}>Edit</button>
                     <button onClick={() => handleDeleteCustomer(customer.id)}>Delete</button>
                   </td>
                 </tr>
@@ -103,7 +131,7 @@ export default function CustomerDashboard() {
 
       {showForm && (
         <div className={styles.formContainer}>
-          <form onSubmit={handleAddCustomer}>
+          <form onSubmit={handleSubmit}>
             <label htmlFor="nickName">Nickname</label>
             <input
               type="text"
@@ -112,8 +140,10 @@ export default function CustomerDashboard() {
               onChange={(e) => setNickName(e.target.value)}
               required
             />
-            <button type="submit" className={styles.submitBtn}>Add</button>
-            <button type="button" className={styles.cancelBtn} onClick={() => setShowForm(false)}>Cancel</button>
+            <button type="submit" className={styles.submitBtn}>
+              {editingId ? "Update" : "Add"}
+            </button>
+            <button type="button" className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
           </form>
         </div>
       )}
