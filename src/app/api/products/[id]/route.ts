@@ -1,59 +1,58 @@
-//src/app/api/products/[id]/route.ts
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../../prisma";
+const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
+// GET product by ID
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  const id = Number(params.id);
 
-  if (req.method === "GET") {
-    try {
-      const product = await prisma.product.findUnique({
-        where: { id: Number(id) },
-        include: {
-          toppings: {
-            include: {
-              Topping: true,
-            },
-          },
-        },
-      });
-      res.status(200).json(product);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch product" });
+  try {
+    const product = await prisma.products.findUnique({ where: { id } });
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
-  } else if (req.method === "PATCH") {
-    const { productName, category, price, toppingIds } = req.body;
+    return NextResponse.json(product, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return NextResponse.json({ error: "Failed to fetch product." }, { status: 500 });
+  }
+}
 
-    try {
-      const updatedProduct = await prisma.product.update({
-        where: { id: Number(id) },
-        data: {
-          productName,
-          category,
-          price: parseInt(price),
-          toppings: {
-            set: toppingIds.map((toppingId: number) => ({
-              toppingId: parseInt(toppingId.toString()),
-            })),
-          },
-        },
-      });
-      res.status(200).json(updatedProduct);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to update product" });
-    }
-  } else if (req.method === "DELETE") {
-    try {
-      await prisma.product.delete({
-        where: { id: Number(id) },
-      });
-      res.status(200).json({ message: "Product deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to delete product" });
-    }
-  } else {
-    res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+// PATCH (update) product by ID
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+  const id = Number(params.id);
+  const body = await request.json();
+  const { productName, category, price, image } = body;
+
+  try {
+    const updatedProduct = await prisma.products.update({
+      where: { id },
+      data: {
+        productName,
+        category,
+        price,
+        image: Buffer.from(image.split(",")[1], 'base64'), // Update image as binary
+      },
+    });
+    return NextResponse.json(updatedProduct, { status: 200 });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return NextResponse.json({ error: "Failed to update product." }, { status: 500 });
+  }
+}
+
+// DELETE product by ID
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  const id = Number(params.id);
+
+  try {
+    await prisma.products.delete({
+      where: { id },
+    });
+    return NextResponse.json({ message: 'Product deleted successfully.' }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return NextResponse.json({ error: "Failed to delete product." }, { status: 500 });
   }
 }

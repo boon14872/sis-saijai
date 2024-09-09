@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./employee.module.css";
+import Styles from "./employee.module.css";
 
 type Employee = {
   id: number;
@@ -162,10 +162,10 @@ export default function EmployeeDashboard() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.top}>
-        <h1 className={styles.headerTitle}>Employee Dashboard</h1>
-        <button className={styles.addBtn} onClick={() => setShowForm(true)}>
+    <div className={Styles.container}>
+      <div className={Styles.top}>
+        <h1 className={Styles.headerTitle}>Employee Dashboard</h1>
+        <button className={Styles.addBtn} onClick={() => setShowForm(true)}>
           Add Employee
         </button>
       </div>
@@ -176,7 +176,7 @@ export default function EmployeeDashboard() {
         <p>{error}</p>
       ) : (
         <>
-          <table className={styles.table}>
+          <table className={Styles.table}>
             <thead>
               <tr>
                 <th>ID</th>
@@ -215,7 +215,7 @@ export default function EmployeeDashboard() {
       )}
 
       {showForm && (
-        <div className={styles.formContainer}>
+        <div className={Styles.formContainer}>
           <form onSubmit={handleSubmit}>
             <label>First Name</label>
             <input
@@ -249,7 +249,7 @@ export default function EmployeeDashboard() {
               onChange={handleChange}
               required
             />
-            {phoneError && <p className={styles.error}>{phoneError}</p>}
+            {phoneError && <p className={Styles.error}>{phoneError}</p>}
             <label>Position</label>
             <select
               name="position"
@@ -278,12 +278,12 @@ export default function EmployeeDashboard() {
               onChange={handleChange}
               required
             />
-            <button type="submit" className={styles.submitBtn}>
+            <button type="submit" className={Styles.submitBtn}>
               {editingId ? "Update Employee" : "Add Employee"}
             </button>
             <button
               type="button"
-              className={styles.cancelBtn}
+              className={Styles.cancelBtn}
               onClick={resetForm}
             >
               Cancel

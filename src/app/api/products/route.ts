@@ -1,46 +1,41 @@
-// src/app/api/products/route.ts
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../prisma";
+const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "GET") {
+// GET all products
+export async function GET() {
+  try {
+    const products = await prisma.products.findMany();
+    return NextResponse.json(products, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return NextResponse.json({ error: "Failed to fetch products." }, { status: 500 });
+  }
+}
+// POST to add a new product
+export async function POST(request: Request) {
     try {
-      const products = await prisma.product.findMany({
-        include: {
-          toppings: {
-            include: {
-              Topping: true,  // Include topping details
-            },
-          },
-        },
-      });
-      res.status(200).json(products);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch products" });
-    }
-  } else if (req.method === "POST") {
-    const { productName, category, price, toppingIds } = req.body;
-
-    try {
-      const newProduct = await prisma.product.create({
+      const body = await request.json();
+      const { productName, category, price, image } = body;
+  
+      // ตรวจสอบว่ามีข้อมูลครบถ้วนหรือไม่
+      if (!productName || !category || !price || !image) {
+        return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      }
+  
+      const newProduct = await prisma.products.create({
         data: {
           productName,
           category,
-          price: parseInt(price),
-          toppings: {
-            create: toppingIds.map((toppingId: number) => ({
-              toppingId: parseInt(toppingId.toString()),
-            })),
-          },
+          price,
+          image: Buffer.from(image, 'base64'), // แปลง Base64 เป็น binary
         },
       });
-      res.status(201).json(newProduct);
+  
+      return NextResponse.json(newProduct, { status: 201 });
     } catch (error) {
-      res.status(500).json({ error: "Failed to add product" });
+      console.error('Error creating product:', error);
+      return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
-  } else {
-    res.setHeader("Allow", ["GET", "POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
