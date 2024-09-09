@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       const body = await request.json();
       const { productName, category, price, image } = body;
   
-      // ตรวจสอบว่ามีข้อมูลครบถ้วนหรือไม่
+      // ตรวจสอบว่าได้รับข้อมูลที่จำเป็นครบถ้วน
       if (!productName || !category || !price || !image) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
       }
