@@ -9,7 +9,7 @@ type Products = {
   productName: string;
   category: string;
   price: number;
-  image?: string; // Optional image path (binary data stored as base64)
+  image?: string; 
 };
 
 export default function ProductDashboard() {

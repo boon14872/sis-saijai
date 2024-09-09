@@ -26,7 +26,13 @@ model Employee {
 model Products {
   id            Int      @id @default(autoincrement())
   productName   String
-  category      String   // หมวดหมู่ coffee, tea, smoothie, bakery
-  price         Int      // price in บาท
-  image         Bytes    // image stored as binary data
+  category      String
+  price         Int
+  image         String  
+}
+
+model Inventory {
+  id            Int      @id @default(autoincrement())
+  inventoryName String
+  quantity      Int
 }
