@@ -9,7 +9,7 @@ type Products = {
   productName: string;
   category: string;
   price: number;
-  image?: string; 
+  image?: string;
 };
 
 export default function ProductDashboard() {
@@ -42,7 +42,9 @@ export default function ProductDashboard() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setNewProduct({ ...newProduct, [name]: value });
   };
@@ -66,25 +68,34 @@ export default function ProductDashboard() {
     try {
       const formData = {
         ...newProduct,
-        image: newProduct.image.split(",")[1], // ส่งข้อมูล Base64 โดยตัด prefix ออก
+        image: newProduct.image,
       };
-  
-      const response = await axios.post("/api/products", formData);
+
+      const data = new FormData();
+      data.append("productName", formData.productName);
+      data.append("category", formData.category);
+      data.append("price", formData.price.toString());
+      data.append("image", formData.image);
+
+      const response = await axios.post("/api/products", data);
       setProducts([...products, response.data]);
     } catch (error) {
       console.error("Error adding product:", error);
       setError("Failed to submit form.");
     }
   };
-  
+
   const handleUpdateProduct = async () => {
     try {
       const formData = {
         ...newProduct,
         image: newProduct.image.split(",")[1], // ส่งข้อมูล Base64 โดยตัด prefix ออก
       };
-  
-      const response = await axios.patch(`/api/products/${editingId}`, formData);
+
+      const response = await axios.patch(
+        `/api/products/${editingId}`,
+        formData
+      );
       setProducts(
         products.map((product) =>
           product.id === editingId ? { ...product, ...response.data } : product
@@ -95,7 +106,6 @@ export default function ProductDashboard() {
       setError("Failed to update form.");
     }
   };
-  
 
   const handleEdit = (product: Products) => {
     setEditingId(product.id);
@@ -233,7 +243,10 @@ export default function ProductDashboard() {
                 if (file) {
                   const reader = new FileReader();
                   reader.onloadend = () => {
-                    setNewProduct({ ...newProduct, image: reader.result as string });
+                    setNewProduct({
+                      ...newProduct,
+                      image: reader.result as string,
+                    });
                   };
                   reader.readAsDataURL(file);
                 }
